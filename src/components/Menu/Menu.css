@@ -1,0 +1,90 @@
+#menu-wrapper{
+    width: 100vw;
+    box-sizing: border-box;
+}
+.top-bar{
+    background-color: rgb(56, 54, 54);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    color: white;
+}
+
+.top-bar h2{
+    display: inline;
+}
+
+#menu-wrapper #dropdown-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 40px;
+    border: 0;
+}
+#dropdown-wrapper button:last-of-type{
+    background-color: lightgrey;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+select, input, button{
+    margin: 3px;
+    outline: none;
+}
+
+#menu-button{
+    margin-top: 15px;
+    width: 100px;
+    height: 40px;
+    background-color: blue;
+    color: #fff;
+    border: 0; 
+    position: absolute;
+    left: 6px;
+    top: -6px;
+
+}
+span{
+    color: red;
+}
+
+#menu-wrapper > table{
+    width: auto;
+}
+table{
+    margin-left: 15vw;
+}
+
+table  th{
+    background-color: lightgrey;
+    width: 10vw;    
+    height: 4vh;
+}
+td{
+    text-align: center;
+}
+
+#menu-wrapper div{
+    margin-top: 5px;
+    position: relative;
+    border: 1px solid grey;
+    padding: 10px;
+    width: 100vw;
+    padding-bottom: 15px;
+}
+
+#menu-wrapper  p:last-of-type{
+    text-align: right;
+}
+
+
+#menu-wrapper tr:hover{
+    background-color: lightgrey;
+}
+
+
+a{
+    all: unset;
+}
