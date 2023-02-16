@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {Link} from "react-router-dom";
-import {FaBars, FaCaretDown,FaShareAlt, FaRetweet, FaRedo, FaRedoAlt, FaCross, FaTimes, FaBox, FaSquare, FaSquareFull, FaWindowMaximize, FaRegWindowMaximize} from "react-icons/fa"
+import {FaBars, FaCaretDown,FaShareAlt, FaRedo, FaRedoAlt,FaTimes,FaRegWindowMaximize} from "react-icons/fa"
 import './People.css'
 
 function People() {
@@ -18,7 +18,7 @@ function People() {
             .then(items =>{
                 if(mounted){
                     setList(items);
-                    setDisplayedList(items.slice(0,1));
+                    setDisplayedList(items.slice());
                 }
             })
         return () => mounted = false;
@@ -52,7 +52,7 @@ function People() {
         for(const key in formObjectArranged){
             const currentFormProp = formObjectArranged[key]?.toLowerCase();
             const currentItemProp =item[key]?.toLowerCase();
-            if(currentFormProp =='' || currentItemProp == '') continue;
+            if(currentFormProp == '' || currentItemProp == '') continue;
             if(currentFormProp != currentItemProp) isMatch = false;
         
         }
