@@ -1,47 +1,64 @@
 import { useEffect, useState } from "react"
-import {FaBars, FaCaretDown} from "react-icons/fa"
+import {Link} from "react-router-dom";
+import {FaBars, FaCaretDown,FaShareAlt, FaRetweet, FaRedo, FaRedoAlt, FaCross, FaTimes, FaBox, FaSquare, FaSquareFull, FaWindowMaximize, FaRegWindowMaximize} from "react-icons/fa"
 import './People.css'
 
 function People() {
     const [list, setList] = useState([])
     const [showDropDown, setDropDown] = useState(false)
-    const [formData, setFormData] = useState({})
+    const [currentItem, setCurrentItem] = useState([])
+    const [displayedList, setDisplayedList] = useState([])
+    const [showExtraInfo, toggleExtraInfo] = useState(true);
+    const [showImages, setShowImages] = useState(false);
+    const [imageId, setImageId] = useState('')
 
+    useEffect(() =>{
+        let mounted = true;
+        getData()
+            .then(items =>{
+                if(mounted){
+                    setList(items);
+                    setDisplayedList(items.slice(0,1));
+                }
+            })
+        return () => mounted = false;
+    }, [])  
+    
     function getData(){
-        return fetch('MOCK_DATA.json').then(data => data.json())
+        return fetch('MOCK_DATA2.json').then(data => data.json())
     }
 
     const getDate = () =>{
         return new Date().toISOString().slice(0,9);
     }
-    useEffect(() =>{
-        getData().then(items =>setList(items))
-    }, [])
+    let formObjectArranged;
     
     function handleSubmit(evt){
         evt.preventDefault();
         const data = new FormData(evt.target)
         let formObject = Object.fromEntries(data.entries())
-        formObject ={
+        formObjectArranged ={
             [formObject.field1]: formObject.input1,
             [formObject.field2]: formObject.input2,
-            [formObject.field3]: formObject.input3,
-
+            [formObject.field3]: formObject.input3
         }
-        setFormData(formObject)
-        setList(list.filter(item =>searchFilter(item)))
+        setDisplayedList(list.filter(searchFilter))
+        toggleExtraInfo(false)
     }
 
     function searchFilter(item){
-        if(Object.keys(formData).length == 0) return true;
-        for(const key in formData){
-            const currentFormProp = formData[key]?.toLowerCase();
+        let isMatch = true
+        if(Object.keys(formObjectArranged).length == 0) return true;
+        for(const key in formObjectArranged){
+            const currentFormProp = formObjectArranged[key]?.toLowerCase();
             const currentItemProp =item[key]?.toLowerCase();
-            if(currentFormProp == currentItemProp) return true;
+            if(currentFormProp =='' || currentItemProp == '') continue;
+            if(currentFormProp != currentItemProp) isMatch = false;
         
         }
-        return false
+        return isMatch;
     }
+
     return(
         <section id = 'people-wrapper'>
             <div id = 'people-top-bar'>
@@ -53,7 +70,7 @@ function People() {
             {
                 showDropDown &&
                 <div id = 'drop-down'>
-                    <form action="" method="get" onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
 
                         <h4>Change Search Conditions</h4>
 
@@ -106,7 +123,8 @@ function People() {
                                 <option value="birth-place">Birth Place</option>
                                 <option value="Maiden_name">Maiden Name</option>
                                 <option value="Address">Address Line</option>
-                                <option value="Roles">Roles</option>                                <option value="Voters_card">Voter's Card</option>
+                                <option value="Roles">Roles</option>
+                                <option value="Voters_card">Voter's Card</option>
                             </select>
                             <p>Value: </p>
                             <input type="text" className = "value" name="input3"/>
@@ -116,6 +134,42 @@ function People() {
                     </form>
                 </div>
             }
+
+            {
+                showImages &&
+                <div id="images">
+                    <div>
+                    <p>Images</p>
+                    <div id="images-icons">
+                        <FaRedo/><FaRegWindowMaximize/><FaTimes onClick={()=>setShowImages(false)}/>
+                    </div>
+                    </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            displayedList.
+                                find(item => item?.id == imageId)['links'].
+                                    map(link=>(
+                                        <tr key={link}>
+                                            <td>{imageId}</td>
+                                            <td><Link to={link}>{link}</Link></td>
+                                            
+                                        </tr>
+                                    ))
+
+
+                        }
+                    </tbody>
+                </table>
+               </div>
+            }
+            
             <div id = 'persons'>
                 <p>Persons</p>
                 <table>
@@ -127,24 +181,36 @@ function People() {
                             <th>Gender</th>
                             <th>Status</th>
                             <th>Deceased</th>
-                            <th>Birth Place</th>
+                            <th>BirthPlace</th>
                             <th>Address Line</th>
                             <th>Address City</th>
                             <th>Address Country</th>
                             <th>Name Type</th>
-                            <th>Title Honourific</th>
+                            <th>Title Honourif</th>
                             <th>First Name</th>
                             <th>Middle Name</th>
                             <th>SurName</th>
                             <th>Maiden Name</th>
-                            <th>Other Name</th>
+                            <th>OtherName</th>
                             <th>Option</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                        list.map(item =>(
-                                <tr key= {String(item['id'])}>
+                        displayedList.map(item =>(
+                                <tr key= {String(item['id'])} id = {item.id} className ='people' 
+                                    onClick ={evt => {
+                                        document.querySelectorAll('.people')
+                                            .forEach(trNode =>
+                                                trNode.style.backgroundColor = ''
+                                        )
+                                        setCurrentItem([item]);
+                                        toggleExtraInfo(true);
+                                        evt.target.closest('tr').style.backgroundColor = 'rgb(250, 255, 173)';
+                                        }
+                                    }
+                                    
+                                >
                                     <td>{item['id']}</td>
                                     <td>Add</td>
                                     <td>{item['Date_action'].replace(/\//g, '')}</td>
@@ -162,12 +228,19 @@ function People() {
                                     <td>{item['last_name']}</td>
                                     <td>{item['Maiden_name']}</td>
                                     <td></td>
-                                    <td></td>
+                                    <td><FaBars className="icons" onClick={
+                                            ()=>{
+                                                setImageId(item?.id);
+                                                setShowImages(true);
+
+                                            }}/>
+                                        <FaShareAlt className="icons"/></td>
                                 </tr>
                         )) 
                         }
                     </tbody>
                 </table>
+                
             </div>
             <div id="numbers-description">
                 <div id="numbers">
@@ -181,8 +254,9 @@ function People() {
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                list.map(item =>(
+                            { 
+                                showExtraInfo &&
+                                currentItem.map(item =>(
                                     <tr key={String(item.id)}>
                                         <td>{item.id}</td>
                                         <td>Voters Card</td>
@@ -206,7 +280,8 @@ function People() {
                    </thead>
                    <tbody>
                         {
-                            list.map(item =>(
+                            showExtraInfo &&
+                            currentItem.map(item =>(
                                 <tr key= {String(item.id)}>
                                 <td>{item.id}</td> 
                                 <td>1</td>
@@ -231,7 +306,8 @@ function People() {
                         </thead>
                         <tbody>
                             {
-                                list.map(item =>(
+                                showExtraInfo &&
+                                currentItem.map(item =>(
                                     <tr key={item.id}>
                                         <td>{item.id}</td>
                                         <td>Citizenship</td>
@@ -256,7 +332,8 @@ function People() {
                         </thead>
                         <tbody>
                         {
-                            list.map(item =>(
+                            showExtraInfo &&
+                            currentItem.map(item =>(
                                 <tr key = {item.id}>
                                     <td>{item.id}</td>
                                     <td>Date inactive</td>
@@ -287,7 +364,8 @@ function People() {
                         </thead>
                         <tbody>
                             {
-                                list.map(item =>(
+                                showExtraInfo &&
+                                currentItem.map(item =>(
                                     <tr key= {item.id}>
                                         <td>{item.id}</td>
                                         <td>PEP</td>
@@ -319,7 +397,8 @@ function People() {
                             </thead>
                             <tbody>
                                 {
-                                    list.map((item, index) =>(
+                                    showExtraInfo &&
+                                    currentItem.map((item, index) =>(
                                         <tr key={item.id}>
                                             <td>{item.id}</td>
                                             <td></td>
@@ -348,21 +427,62 @@ function People() {
                         <th>Action</th>
                         <th>Date Action</th>
                         <th>Gender</th>
-                        <th>Status</th>
-                        <th>Birth Place</th>
+                        <th>ActiveStatus</th>
+                        <th>Deceased</th>
+                        <th>BirthPlace</th>
                         <th>Address Line</th>
                         <th>Address City</th>
                         <th>Address Country</th>
                         <th>Name Type</th>
-                        <th>Title Honourifi</th>
+                        <th>Title Honourific</th>
                         <th>First Name</th>
                         <th>Middle Name</th>
                         <th>Surname</th>
                         <th>Maiden Name</th>
                         <th>Suffix</th>
+                        <th>OtherName</th>
                         <th>Options</th>
                     </tr>
                     </thead>
+                    <tbody>
+                        {
+                            showExtraInfo &&
+                            list.filter((item, index) =>{
+                                console.log(currentItem[0])
+                                if(!currentItem[0]) return false;
+                               return currentItem[0]['associates']?.includes(item?.id)
+                            }).map(item =>( 
+                                <tr key={item.id}>
+                                    <td>{currentItem[0].id}</td>
+                                    <td>{item['id']}</td>
+                                    <td>No</td>
+                                    <td>Person</td>
+                                    <td></td>
+                                    <td>Add</td>
+                                    <td>{item['Date_action'].replace(/\//g, '')}</td>
+                                    <td>{item['gender']}</td>
+                                    <td>Active</td>
+                                    <td></td>
+                                    <td>{item['Date_action']}</td>
+                                    <td>{item['Address']}</td>
+                                    <td>{item['Address_city']}</td>
+                                    <td>{item['Country']}</td>
+                                    <td></td>
+                                    <td>{item['Title']}</td>
+                                    <td>{item['first_name']}</td>
+                                    <td>{item['Other_name']}</td>
+                                    <td>{item['last_name']}</td>
+                                    <td>{item['Maiden_name']}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><FaRedoAlt onClick={evt =>{
+                                        setDisplayedList([item]);
+                                        toggleExtraInfo(false);
+                                    }} className="icons"/><FaShareAlt className="icons"/></td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
                 </table>
             </div>
         </section>

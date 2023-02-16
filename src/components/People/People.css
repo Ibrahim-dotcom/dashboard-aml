@@ -1,6 +1,6 @@
 #people-wrapper{
     position: absolute;
-    background-color: lightgrey;
+    background-color: #fff;
     left: 0;
     right: 0;
     top:0;
@@ -89,14 +89,65 @@ form button:nth-of-type(2){
     border: none;
     color: #fff;
 }
+
+
+#images{
+    position: absolute;
+    left: 5vw;
+    top: 11.5vh;
+    width: 50vw;
+    height: 380px;
+    background-color: #fff;
+    padding-top: 0;
+}
+
+#images div:first-of-type{
+    display: flex;
+    justify-content: space-between;
+    background-color: lightgrey;
+    align-items: center;
+}
+
+#images div:first-of-type *{
+    margin: 3px 4px;
+}
+
+#images p{
+    padding: 5px;
+    left: -8px;
+    position: relative;
+    
+    top: 0;
+}
+
+#images table{
+    width: 100%;
+}
+
+#images td{
+    text-align: left;
+}
+#images th:first-of-type{
+    width: 25%;
+}
+
+
 #people-wrapper #persons{
     margin-top: 30px;
     height: 30vh;
     overflow: scroll;
 }
+
 #people-wrapper #persons table{
     width: 100vw;
 }
+
+
+#people-wrapper #persons table tr:hover,#people-wrapper #associate table tr:hover{
+    background-color: lightgrey;
+}
+
+
 #people-wrapper #numbers-description, #sanctions-roles{
     display: flex;
     align-items: center;
@@ -126,7 +177,7 @@ form button:nth-of-type(2){
 
 #people-wrapper #numbers, #people-wrapper #descriptions, #people-wrapper #countries, #people-wrapper #date{
     width: 20vw;
-    height: 25vh;
+    height: 20vh;
     overflow: scroll;
     border: 1px solid black;
 
@@ -138,7 +189,7 @@ form button:nth-of-type(2){
 }
 
 #sanctions, #roles{
-    height: 25vh;
+    height: 20vh;
     border: 1px solid black;
     overflow: scroll;
 }
@@ -154,7 +205,22 @@ form button:nth-of-type(2){
     width: 60vw;
 }
 
+#associate {
+    height: 30vh;
+}
 
 #associate table{
     width: 100vw;
+}
+
+.icons{
+    background-color: lightgrey;
+    padding: 3px;
+    margin: 0 2px;
+    border-radius: 4px;
+}
+
+td:last-of-type{
+    min-width: 60px;
+    max-height: min-content;
 }
